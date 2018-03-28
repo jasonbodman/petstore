@@ -17,13 +17,13 @@ session = DBSession()
 
 # Show all animal types
 @app.route('/')
-@app.route('types')
+@app.route('/types')
 def showTypes():
     types = session.query(Type).order_by(asc(Type.name))
     return render_Template('types.html', types = types)
 
 # Create a new animal type
-@app.route('types/new/')
+@app.route('/types/new/')
 def newType():
     if request.method == 'POST':
         newType = Type(name = request.form['name'])
@@ -47,7 +47,7 @@ def editType(type_id):
         return render_template('editType.html')
 
 # Delete a current animal type
-@app.route('types/<int:type_id>/delete')
+@app.route('/types/<int:type_id>/delete')
 def deleteType(type_id):
     if request.method == 'POST':
         type = session.query(Type).filter_by(id = type_id).one()
@@ -114,7 +114,7 @@ def deletePet(type_id, pet_id):
         return render_template('deletePet.html', type_id = type_id, pet_id = pet_id)
 
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
