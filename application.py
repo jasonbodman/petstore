@@ -69,7 +69,8 @@ def allPets(type_id):
 @app.route('/types/<int:type_id>/pets/new/')
 def newPet(type_id):
     if request.method == 'POST':
-        newPet = Pet(name = request.form['name'], description = request.form['decription'], adpoted = request.form['adopted'], type = type_id, user_id = login_session['user_id'])
+        # UserID temporarily pulling from radio button on 'newPet'
+        newPet = Pet(name = request.form['name'], description = request.form['decription'], adpoted = request.form['adopted'], type = type_id, user_id = request.form['user'])
         session.add(newPet)
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
