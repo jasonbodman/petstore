@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+{% block content %}
+  <div class="col-md-12"></div>
+  <div class="row banner main">
+    <div class="col-md-1"></div>
+    <div class="col-md-11">
+      <h1>Add New Pet</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+
+      <form action="{{url_for('newPet', type_id = type.id)}}" method='post'>
+        <label for="name">Pet Name:</label>
+        <input type="text" maxlength="32" name="name" placeholder="Name of the pet">
+
+        <br></br>
+        <label for="description">Description of Pet:</label>
+        <textarea maxlength="250" name="description" placeholder="Describe the new pet"></textarea>
+
+        <br></br>
+        <label for="adopted">Has the animal been adopted?</label>
+        <select name="adopted">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+
+<!-- Temporary option to select User ID -->
+        <br></br>
+        <label for="user">Select user</label>
+        <input type="radio" name="user" value="1">User1
+
+        <br></br>
+        <button type="submit">Create!</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

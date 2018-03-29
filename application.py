@@ -66,16 +66,17 @@ def allPets(type_id):
     return render_template('allPets.html', type = type, pets = pets)
 
 # Create a new pet
-@app.route('/types/<int:type_id>/pets/new/')
+@app.route('/types/<int:type_id>/pets/new/', methods=['GET', 'POST'])
 def newPet(type_id):
+    type = session.query(Type).filter_by(id = type_id).one()
     if request.method == 'POST':
         # UserID temporarily pulling from radio button on 'newPet'
-        newPet = Pet(name = request.form['name'], description = request.form['decription'], adpoted = request.form['adopted'], type = type_id, user_id = request.form['user'])
+        newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
         session.add(newPet)
         session.commit()
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('showTypes', type_id = type_id))
     else:
-        return render_template('newPet.html', type_id = type_id)
+        return render_template('newPet.html', type = type)
 
 # View details about a specific pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/')
