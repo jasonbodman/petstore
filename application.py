@@ -20,7 +20,7 @@ session = DBSession()
 @app.route('/types')
 def showTypes():
     types = session.query(Type).order_by(asc(Type.name))
-    return render_Template('types.html', types = types)
+    return render_template('types.html', types = types)
 
 # Create a new animal type
 @app.route('/types/new/')
