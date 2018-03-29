@@ -62,7 +62,7 @@ def deleteType(type_id):
 @app.route('/types/<int:type_id>/pets/')
 def allPets(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
-    pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.Name)).all()
+    pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
     return render_template('allPets.html', type = type, pets = pets)
 
 # Create a new pet
