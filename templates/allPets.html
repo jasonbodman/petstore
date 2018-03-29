@@ -1,0 +1,32 @@
+{% extends 'main.html' %}
+{% block content %}
+  <div class="col-md-12"></div>
+  <div class="row banner main">
+    <div class="col-md-1"></div>
+    <div class="col-md-11">
+      <h1>{{type.name}}</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <a href="{{url_for('newPet', type_id = type.id)}}">
+        <p>Add a new pet</p>
+      </a>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+  {% for pet in pets %}
+    <div class="row">
+      <div class="col-md-1"></div>
+      <div class="col-md-10">
+        <h3>{{pet.name}}</h3>
+        <p>{{pet.type}}
+          <br>{{pet.description}}</br>
+        </p>
+      </div>
+      <div class="col-md-1"></div>
+    </div>
+  {% endfor %}
+{% endblock %}
