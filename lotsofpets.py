@@ -24,15 +24,15 @@ session.add(Type2)
 session.commit()
 
 #Create pets
-Pet1 = Pet(name="Ginny", type=Type1, description="Ginny is fun but lazy cat who isn't shy to let you know when it is meal time.", user="User1", adopted="1")
+Pet1 = Pet(name="Ginny", type=Type1, description="Ginny is fun but lazy cat who isn't shy to let you know when it is meal time.", user=User1, adopted="1")
 session.add(Pet1)
 session.commit()
 
-Pet2 = Pet(name="Penny", type=Type1, description="Penny is an adventerous cat who likes naps and tends to be shy.", user="User1", adopted="1")
+Pet2 = Pet(name="Penny", type=Type1, description="Penny is an adventerous cat who likes naps and tends to be shy.", user=User1, adopted="1")
 session.add(Pet2)
 session.commit()
 
-Pet3 = Pet(name="Murphy", type=Type2, description="If you're looking for a furry friend who is ready for adventure and looking to make you happy, you've found him in Murphy!", user="User1", adopted="1")
+Pet3 = Pet(name="Murphy", type=Type2, description="If you're looking for a furry friend who is ready for adventure and looking to make you happy, you've found him in Murphy!", user=User1, adopted="1")
 session.add(Pet3)
 session.commit()
 
