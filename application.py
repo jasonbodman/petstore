@@ -26,7 +26,7 @@ def showTypes():
 @app.route('/types/new/', methods=['GET', 'POST'])
 def newType():
     if request.method == 'POST':
-        newType = Type(name = request.form['name'], user_id=1) # Temporary hold for UserID column
+        newType = Type(name = request.form['name'], user_id="1") # Temporary hold for UserID column
         session.add(newType)
         session.commit()
         return redirect(url_for('showTypes'))
