@@ -14,7 +14,7 @@
 
       <form action="{{ url_for('newType')}}" method='post'>
         <label for="name">Type of Animal:</label>
-        <input type="text" maxlength="32" placeholder="Name of new animal">
+        <input type="text" maxlength="32" name="name" placeholder="Name of new animal">
 
         <br>
         <button type="submit">Create!</button>
