@@ -74,7 +74,7 @@ def newPet(type_id):
         newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
         session.add(newPet)
         session.commit()
-        return redirect(url_for('showTypes', type_id = type_id))
+        return redirect(url_for('allPets', type_id = type_id))
     else:
         return render_template('newPet.html', type = type)
 
