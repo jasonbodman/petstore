@@ -1,0 +1,25 @@
+{% extends 'main.html' %}
+{% block content %}
+  <div class="col-md-12"></div>
+  <div class="row banner main">
+    <div class="col-md-1"></div>
+    <div class="col-md-11">
+      <h1>Add New Pet</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+
+      <form action="{{ url_for('newType')}}" method='post'>
+        <label for="name">Type of Animal:</label>
+        <input type="text" maxlength="32" placeholder="Name of new animal">
+
+        <br>
+        <button type="submit">Create!</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

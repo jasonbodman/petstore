@@ -23,10 +23,10 @@ def showTypes():
     return render_template('types.html', types = types)
 
 # Create a new animal type
-@app.route('/types/new/')
+@app.route('/types/new/', methods=['GET', 'POST'])
 def newType():
     if request.method == 'POST':
-        newType = Type(name = request.form['name'])
+        newType = Type(name = request.form['name'], user_id=1) # Temporary hold for UserID column
         session.add(newType)
         session.commit()
         return redirect(url_for('showTypes'))
@@ -70,7 +70,7 @@ def allPets(type_id):
 def newPet(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
     if request.method == 'POST':
-        # UserID temporarily pulling from radio button on 'newPet'
+        # Temporary hold for UserID column
         newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
         session.add(newPet)
         session.commit()
