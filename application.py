@@ -34,7 +34,7 @@ def newType():
         return render_template('newType.html')
 
 # Edit a current animal type
-@app.route('/types/<int:type_id>/edit')
+@app.route('/types/<int:type_id>/edit', methods=['GET', 'POST'])
 def editType(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
     if request.method == 'POST':
