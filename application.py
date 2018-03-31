@@ -47,7 +47,7 @@ def editType(type_id):
         return render_template('editType.html', type = type)
 
 # Delete a current animal type
-@app.route('/types/<int:type_id>/delete')
+@app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
 def deleteType(type_id):
     if request.method == 'POST':
         type = session.query(Type).filter_by(id = type_id).one()
@@ -55,7 +55,7 @@ def deleteType(type_id):
         session.commit()
         return redirect(url_for('showTypes'))
     else:
-        return render_template('deleteType.html')
+        return render_template('deleteType.html', type = type)
 
 # Show pets for a specific animal type
 @app.route('/types/<int:type_id>/')
