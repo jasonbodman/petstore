@@ -49,6 +49,7 @@ def editType(type_id):
 # Delete a current animal type
 @app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
 def deleteType(type_id):
+    type = session.query(Type).filter_by(id = type_id).one()
     if request.method == 'POST':
         type = session.query(Type).filter_by(id = type_id).one()
         session.delete(type)
