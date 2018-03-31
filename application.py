@@ -80,7 +80,7 @@ def newPet(type_id):
         return render_template('newPet.html', type = type)
 
 # Edit a current pet
-@app.route('/types/<int:type_id>/pets/<int:pet_id>/edit')
+@app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pet = session.query(Pet).filter_by(id = pet_id).one()
@@ -98,7 +98,7 @@ def editPet(type_id, pet_id):
         return render_template('editPet.html', type_id = type_id, pet_id = pet_id)
 
 # Delete a pet
-@app.route('/types/<int:type_id>/pets/<int:pet_id>/delete')
+@app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
 def deletePet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pet = session.query(Pet).filter_by(id = pet_id).one()
