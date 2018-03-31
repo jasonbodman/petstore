@@ -14,3 +14,9 @@
 .banner img {
   width: 100%;
 }
+
+.flash ul {
+  list-style-type: none;
+  background-color: #00ff83;
+  text-align: center;
+}
