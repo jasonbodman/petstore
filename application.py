@@ -44,7 +44,7 @@ def editType(type_id):
             session.commit()
             return redirect(url_for('showTypes'))
     else:
-        return render_template('editType.html')
+        return render_template('editType.html', type = type)
 
 # Delete a current animal type
 @app.route('/types/<int:type_id>/delete')
