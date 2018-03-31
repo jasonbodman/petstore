@@ -78,13 +78,6 @@ def newPet(type_id):
     else:
         return render_template('newPet.html', type = type)
 
-# View details about a specific pet
-@app.route('/types/<int:type_id>/pets/<int:pet_id>/')
-def showPet(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one()
-    pet = session.query(Pet).filter_by(id = pet_id).one()
-    return render_template('showPet.html', type = type, pet = pet)
-
 # Edit a current pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/edit')
 def editPet(type_id, pet_id):
