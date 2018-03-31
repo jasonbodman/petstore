@@ -130,8 +130,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     print "done!"
+    flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
 
 # Connect via Facebook Sign In
@@ -199,7 +200,8 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
 
 @app.route('/disconnect')
@@ -217,8 +219,10 @@ def disconnect():
         del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
+        flash("You have successfully been logged out.")
         return redirect(url_for('showTypes'))
     else:
+        flash("You were not logged in.")
         return redirect(url_for('showTypes'))
 
 
@@ -290,6 +294,7 @@ def newType():
     if request.method == 'POST':
         newType = Type(name = request.form['name'], user_id="1") # Temporary hold for UserID column
         session.add(newType)
+        flash("New animal type, %s, successfully created!" % newType.name)
         session.commit()
         return redirect(url_for('showTypes'))
     else:
@@ -303,6 +308,7 @@ def editType(type_id):
         if request.form['name']:
             type.name = request.form['name']
             session.add(type)
+            flash("%s successfully edited!" % type.name)
             session.commit()
             return redirect(url_for('showTypes'))
     else:
@@ -315,6 +321,7 @@ def deleteType(type_id):
     if request.method == 'POST':
         type = session.query(Type).filter_by(id = type_id).one()
         session.delete(type)
+        flash("%s successfully deleted!" % type.name)
         session.commit()
         return redirect(url_for('showTypes'))
     else:
@@ -336,6 +343,7 @@ def newPet(type_id):
         # Temporary hold for UserID column
         newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
         session.add(newPet)
+        flash("Created new pet, %s" % newPet.name)
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
     else:
@@ -354,6 +362,7 @@ def editPet(type_id, pet_id):
         if request.form['adopted']:
             editedPet.adopted = request.form['adopted']
         session.add(editedPet)
+        flash("Successfully edited %s's details" % editedPet.name)
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
     else:
@@ -366,6 +375,7 @@ def deletePet(type_id, pet_id):
     pet = session.query(Pet).filter_by(id = pet_id).one()
     if request.method == 'POST':
         session.delete(pet)
+        flash("Successfully deleted %s" % pet.name)
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
     else:
