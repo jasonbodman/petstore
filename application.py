@@ -14,6 +14,10 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+# User Authentication
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 # Show all animal types
 @app.route('/')
