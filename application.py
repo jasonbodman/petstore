@@ -83,19 +83,19 @@ def newPet(type_id):
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
-    pet = session.query(Pet).filter_by(id = pet_id).one()
+    editedPet = session.query(Pet).filter_by(id = pet_id).one()
     if request.method == 'POST':
         if request.form['name']:
-            pet.name = request.form['name']
+            editedPet.name = request.form['name']
         if request.form['description']:
-            pet.description = request.form['description']
+            editedPet.description = request.form['description']
         if request.form['adopted']:
-            pet.adopted = request.form['adopted']
-        session.add(pet)
+            editedPet.adopted = request.form['adopted']
+        session.add(editedPet)
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
     else:
-        return render_template('editPet.html', type_id = type_id, pet_id = pet_id)
+        return render_template('editPet.html', type = type, pet=editedPet)
 
 # Delete a pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
@@ -107,7 +107,7 @@ def deletePet(type_id, pet_id):
         session.commit()
         return redirect(url_for('allPets', type_id = type_id))
     else:
-        return render_template('deletePet.html', type_id = type_id, pet_id = pet_id)
+        return render_template('deletePet.html', type=type, pet=pet)
 
 
 if __name__ == '__main__':
