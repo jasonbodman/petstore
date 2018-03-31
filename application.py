@@ -217,11 +217,9 @@ def disconnect():
         del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
-        flash("You have successfully been logged out.")
-        return redirect(url_for('showRestaurants'))
+        return redirect(url_for('showTypes'))
     else:
-        flash("You were not logged in")
-        return redirect(url_for('showRestaurants'))
+        return redirect(url_for('showTypes'))
 
 
 @app.route('/fbdisconnect')
@@ -254,6 +252,28 @@ def gdisconnect():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+# Return user id if email is stored in user database
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email = email).one()
+        return user.id
+    except:
+        return None
+
+# Return user object associated with id number
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id = user_id).one()
+    return user
+
+# Create new user
+def createUser(login_session):
+    newUser = User(name = login_session['username'], email = login_session['email'],
+    picture = login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email = login_session['email']).one()
+    return user.id
 
 
 
