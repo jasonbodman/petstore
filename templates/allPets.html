@@ -25,6 +25,8 @@
         <h3>{{pet.name}}</h3>
         <p>{{type.name}}
           <br>{{pet.description}}</br>
+          <br><a href="{{url_for('editPet', type_id=type.id, pet_id=pet.id)}}">Edit</a>
+          <br><a href="{{url_for('deletePet', type_id=type.id, pet_id=pet.id)}}">Delete</a>
         </p>
       </div>
       <div class="col-md-1"></div>
