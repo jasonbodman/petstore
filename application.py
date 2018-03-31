@@ -286,11 +286,17 @@ def createUser(login_session):
 @app.route('/types')
 def showTypes():
     types = session.query(Type).order_by(asc(Type.name))
-    return render_template('types.html', types = types)
+    if 'username' not in login_session:
+        return render_template('publicTypes.html', types = types)
+    else:
+        return render_template('types.html', types = types)
+    return render_template('publicTypes.html', types = types)
 
 # Create a new animal type
 @app.route('/types/new/', methods=['GET', 'POST'])
 def newType():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newType = Type(name = request.form['name'], user_id="1") # Temporary hold for UserID column
         session.add(newType)
@@ -304,6 +310,8 @@ def newType():
 @app.route('/types/<int:type_id>/edit', methods=['GET', 'POST'])
 def editType(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
             type.name = request.form['name']
@@ -318,6 +326,8 @@ def editType(type_id):
 @app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
 def deleteType(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         type = session.query(Type).filter_by(id = type_id).one()
         session.delete(type)
@@ -333,12 +343,17 @@ def deleteType(type_id):
 def allPets(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
-    return render_template('allPets.html', type = type, pets = pets)
+    if 'username' not in login_session:
+        return render_template('publicAllPets.html', type = type, pets = pets)
+    else:
+        return render_template('allPets.html', type = type, pets = pets)
 
 # Create a new pet
 @app.route('/types/<int:type_id>/pets/new/', methods=['GET', 'POST'])
 def newPet(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         # Temporary hold for UserID column
         newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
@@ -354,6 +369,8 @@ def newPet(type_id):
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     editedPet = session.query(Pet).filter_by(id = pet_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
             editedPet.name = request.form['name']
@@ -373,6 +390,8 @@ def editPet(type_id, pet_id):
 def deletePet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pet = session.query(Pet).filter_by(id = pet_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         session.delete(pet)
         flash("Successfully deleted %s" % pet.name)
