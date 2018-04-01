@@ -24,6 +24,11 @@ h3 {
   border-radius: 5px;
 }
 
+.top-links {
+  padding-top: 15px;
+  padding-bottom: 25px;
+}
+
 .banner {
   min-height: 100px;
   background: url("/static/header.jpeg");

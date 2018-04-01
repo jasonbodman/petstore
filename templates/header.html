@@ -1,12 +1,16 @@
-<div class="row padding-top">
+<div class="row top-links">
   <div class="col-md-6 col-sm-6 col-xs-6 text-left">
     <a href="{{url_for('showTypes')}}">Show All Animal Types</a>
   </div>
   <div class="col-md-6 col-sm-6 col-xs-6 text-right">
         {%if 'username' not in session %}
-    <a href="{{url_for('showLogin')}}">Login</a>
+    <a href="{{url_for('showLogin')}}">
+      <button class="button-edits">Login</button>
+    </a>
     {% else %}
-    <a href="{{url_for('disconnect')}}">Logout</a>
+    <a href="{{url_for('disconnect')}}">
+      <button class="button-edits">Logout</button>
+    </a>
     {% endif %}
   </div>
 </div>
