@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+h3 {
+  color: black;
+}
+
 .padding-top {
   padding-top: 10px;
 }
@@ -19,4 +23,19 @@
   list-style-type: none;
   background-color: #00ff83;
   text-align: center;
+}
+
+.animal-list {
+  background-color: #e0e0e0;
+  color: black;
+}
+
+.animal-list:hover {
+  background-color: #95e0f4;
+  color: white;
+}
+
+.pet-list {
+  background-color: #e0e0e0;
+  color: black;
 }

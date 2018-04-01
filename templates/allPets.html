@@ -5,7 +5,7 @@
   <div class="row banner main">
     <div class="col-md-1"></div>
     <div class="col-md-11">
-      <h1>{{type.name}}</h1>
+      <h1>{{type.name}}s Available for Adoption:</h1>
     </div>
   </div>
 
@@ -21,7 +21,7 @@
   {% for pet in pets %}
     <div class="row">
       <div class="col-md-1"></div>
-      <div class="col-md-10">
+      <div class="col-md-10 pet-list">
         <h3>{{pet.name}}</h3>
         <p>{{type.name}}
           <br>{{pet.description}}</br>
