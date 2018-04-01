@@ -1,6 +1,8 @@
 <div class="row top-links">
   <div class="col-md-6 col-sm-6 col-xs-6 text-left">
-    <a href="{{url_for('showTypes')}}">Show All Animal Types</a>
+    <a href="{{url_for('showTypes')}}">
+      <button class="button-edits">Home</button>
+    </a>
   </div>
   <div class="col-md-6 col-sm-6 col-xs-6 text-right">
         {%if 'username' not in session %}
