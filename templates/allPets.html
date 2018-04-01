@@ -11,12 +11,22 @@
 
   <div class="row">
     <div class="col-md-1"></div>
-    <div class="col-md-10">
+    <div class="col-md-2 button-edits">
       <a href="{{url_for('newPet', type_id = type.id)}}">
         <p>Add a new pet</p>
       </a>
     </div>
-    <div class="col-md-1"></div>
+    <div class="col-md-2 button-edits">
+      <a href="{{url_for('editType', type_id = type.id)}}">
+        <p>Edit animal type</p>
+      </a>
+    </div>
+    <div class="col-md-2 button-edits">
+      <a href="{{url_for('deleteType', type_id = type.id)}}">
+        <p>Delete animal type</p>
+      </a>
+    </div>
+    <div class="col-md-5"></div>
   </div>
   {% for pet in pets %}
     <div class="row">
