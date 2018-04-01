@@ -127,13 +127,7 @@ def gconnect():
         print "User was already created"
     login_session['user_id'] = user_id
 
-    output = ''
-    output += '<h1>Welcome, '
-    output += login_session['username']
-    output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output = ' '
     print "done!"
     flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
