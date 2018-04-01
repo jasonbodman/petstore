@@ -14,6 +14,15 @@ class Type(Base):
     id = Column(Integer, primary_key = True)
     user_id = Column(Integer, ForeignKey('user.id'))
 
+    @property
+    def serialize(self):
+
+        return {
+            'name': self.name,
+            'id': self.id,
+            'user_id': self.user_id,
+        }
+
 class Pet(Base):
     __tablename__ = 'pet'
 
@@ -22,7 +31,18 @@ class Pet(Base):
     type = Column(Integer, ForeignKey('type.id'))
     description = Column(String)
     user = Column(Integer, ForeignKey('user.id'))
-    
+
+    @property
+    def serialize(self):
+
+        return {
+            'name': self.name,
+            'id': self.id,
+            'type': self.type,
+            'description': self.description,
+            'user': self.user,
+        }
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -30,6 +50,17 @@ class User(Base):
     username = Column(String(32), index = True)
     picture = Column(String)
     email = Column(String)
+
+    @property
+    def serialize(self):
+
+        return {
+            'id': self.id,
+            'username': self.username,
+            'picture': self.picture,
+            'email': self.email,
+        }
+
 
 engine = create_engine('sqlite:///itemcatalog.db')
 Base.metadata.create_all(engine)

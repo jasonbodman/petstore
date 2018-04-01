@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, flash
+from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
 
 # Database Connection
 from database_setup import Base, Type, Pet, User
@@ -285,7 +285,28 @@ def createUser(login_session):
     return user.id
 
 
+# JSON Functions
+# Create JSON function to list all animal types and details
+@app.route('/types/JSON')
+def showTypesJSON():
+    types = session.query(Type).order_by(asc(Type.name))
+    return jsonify(types = [i.serialize for i in types])
 
+# Create JSON function to list pets and details for a specific animal type
+@app.route('/types/<int:type_id>/pets/JSON')
+def allPetsJSON(type_id):
+    type = session.query(Type).filter_by(id = type_id).one()
+    pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
+    return jsonify(animalType = [i.serialize for i in pets])
+
+# Create JSON function to list details about a specific pet
+@app.route('/types/<int:type_id>/pets/<int:pet_id>/JSON')
+def showPetJSON(type_id, pet_id):
+    type = session.query(Type).filter_by(id = type_id).one()
+    pet = session.query(Pet).filter_by(id = pet_id).one()
+    return jsonify(selectedPet = [pet.serialize])
+
+# CRUD functions
 # Show all animal types
 @app.route('/')
 @app.route('/types')
