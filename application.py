@@ -369,8 +369,12 @@ def newPet(type_id):
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     editedPet = session.query(Pet).filter_by(id = pet_id).one()
+    creator = getUserInfo(editedPet.user)
     if 'username' not in login_session:
         return redirect('/login')
+    if 'username' != creator.id:
+        flash("You do not have proper access to edit this pet's information.")
+        return redirect(url_for('allPets', type_id = type_id))
     if request.method == 'POST':
         if request.form['name']:
             editedPet.name = request.form['name']
@@ -390,8 +394,12 @@ def editPet(type_id, pet_id):
 def deletePet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pet = session.query(Pet).filter_by(id = pet_id).one()
+    creator = getUserInfo(pet.user)
     if 'username' not in login_session:
         return redirect('/login')
+    if 'username' != creator.id:
+        flash("You do not have proper access to edit this pet's information.")
+        return redirect(url_for('allPets', type_id = type_id))
     if request.method == 'POST':
         session.delete(pet)
         flash("Successfully deleted %s" % pet.name)
