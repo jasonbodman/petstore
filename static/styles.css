@@ -7,12 +7,30 @@ h3 {
   color: black;
 }
 
+input, textarea, select, button {
+  width : 150px;
+  margin: 0;
+
+  -webkit-box-sizing: border-box; /* For legacy WebKit based browsers */
+     -moz-box-sizing: border-box; /* For legacy (Firefox <29) Gecko based browsers */
+          box-sizing: border-box;
+}
+
 .padding-top {
   padding-top: 10px;
 }
 
 .padding-bottom {
   padding-top: 10px;
+}
+
+.button-edits {
+  padding: 10px;
+  margin: 0;
+  border-color: #95e0f4;
+  border-width: 2px;
+  color: #000000;
+  border-radius: 5px;
 }
 
 .banner {
