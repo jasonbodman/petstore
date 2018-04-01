@@ -18,7 +18,7 @@ h3 {
 .banner {
   min-height: 100px;
   width: 100%;
-  background: url("static/header.jpeg");
+  background: url("/static/header.jpeg");
   background-repeat: no-repeat;
 }
 
