@@ -22,8 +22,7 @@ class Pet(Base):
     type = Column(Integer, ForeignKey('type.id'))
     description = Column(String)
     user = Column(Integer, ForeignKey('user.id'))
-    adopted = Column(Integer)
-
+    
 class User(Base):
     __tablename__ = 'user'
 
