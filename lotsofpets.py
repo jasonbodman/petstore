@@ -11,7 +11,7 @@ session = DBSession()
 
 
 # Create dummy user
-User1 = User(username="Jason Bodman", email="bodmand1@gmail.com", picture="https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png")
+User1 = User(username="Test User", email="testemail@udacity.com", picture="https://pbs.twimg.com/profile_images/2671170543/18debd694829ed78203a5a36dd364160_400x400.png")
 session.add(User1)
 session.commit()
 
