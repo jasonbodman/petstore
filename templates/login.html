@@ -10,27 +10,34 @@
   <body>
     <div class="container">
 
-      <div class="row">
-        <div class="col-md-6 text-left">
-          <a href="{{url_for('showTypes')}}">Show All Animal Types</a>
+      <div class="row top-links">
+        <div class="col-md-6 col-sm-6 col-xs-6 text-left">
+          <a href="{{url_for('showTypes')}}">
+            <button class="button-edits">Home</button>
+          </a>
         </div>
-        <div class="col-md-6 text-right">
-          Login
+        <div class="col-md-6 col-sm-6 col-xs-6 text-right">
+              {%if 'username' not in session %}
+          <a href="{{url_for('showLogin')}}">
+            <button class="button-edits">Login</button>
+          </a>
+          {% else %}
+          <a href="{{url_for('disconnect')}}">
+            <button class="button-edits">Logout</button>
+          </a>
+          {% endif %}
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <img src="{{url_for('static', filename='header.jpeg')}}">
+      <div class="row banner padding-top">
+        <div class="col-md-6 test-left">
+          <h1>Jason's Pets</h1>
         </div>
+        <div class="col-md-6"></div>
       </div>
 
       <div class="row">
-        <div class="col-md-12"></div>
-        <div class="row banner main">
-          <div class="col-md-1"></div>
-          <div class="col-md-11">
-            <h1>Login</h1>
-          </div>
+        <div class="col-md-12">
+          <p></p>
         </div>
       </div>
 
