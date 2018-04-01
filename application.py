@@ -356,7 +356,7 @@ def newPet(type_id):
         return redirect('/login')
     if request.method == 'POST':
         # Temporary hold for UserID column
-        newPet = Pet(name = request.form['name'], description = request.form['description'], adopted = "1", type = type_id, user = "1")
+        newPet = Pet(name = request.form['name'], description = request.form['description'], type = type_id, user = "1")
         session.add(newPet)
         flash("Created new pet, %s" % newPet.name)
         session.commit()
@@ -380,8 +380,6 @@ def editPet(type_id, pet_id):
             editedPet.name = request.form['name']
         if request.form['description']:
             editedPet.description = request.form['description']
-        if request.form['adopted']:
-            editedPet.adopted = request.form['adopted']
         session.add(editedPet)
         flash("Successfully edited %s's details" % editedPet.name)
         session.commit()
