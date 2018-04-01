@@ -14,11 +14,13 @@
     <div class="col-md-10">
 
       <form action="{{ url_for('newType')}}" method='post'>
-        <label for="name">Type of Animal:</label>
-        <input type="text" maxlength="32" name="name" placeholder="Name of new animal">
+        <div class="form-group">
+          <label for="name">Type of Animal:</label>
+          <input class="form-control" type="text" maxlength="32" name="name" placeholder="Name of new animal">
 
-        <br>
-        <button type="submit">Create!</button>
+          <br>
+          <button class="button-edits" type="submit">Create!</button>
+        </div>
       </form>
     </div>
     <div class="col-md-1"></div>

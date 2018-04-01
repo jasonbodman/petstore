@@ -14,22 +14,17 @@
     <div class="col-md-10">
 
       <form action="{{url_for('newPet', type_id = type.id)}}" method='post'>
-        <label for="name">Pet Name:</label>
-        <input type="text" maxlength="32" name="name" placeholder="Name of the pet">
+        <div class="form group">
+          <label for="name">Pet Name:</label>
+          <input class="form-control" type="text" maxlength="32" name="name" placeholder="Name of the pet">
 
-        <br></br>
-        <label for="description">Description of Pet:</label>
-        <textarea maxlength="250" name="description" placeholder="Describe the new pet"></textarea>
+          <br></br>
+          <label for="description">Description of Pet:</label>
+          <textarea class="form-control" maxlength="250" name="description" placeholder="Describe the new pet"></textarea>
 
-        <br></br>
-        <label for="adopted">Has the animal been adopted?</label>
-        <select name="adopted">
-          <option>Yes</option>
-          <option>No</option>
-        </select>
-
-        <br></br>
-        <button type="submit">Create!</button>
+          <br></br>
+          <button class="button-edits" type="submit">Create!</button>
+        </div>
       </form>
     </div>
     <div class="col-md-1"></div>
