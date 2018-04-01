@@ -15,6 +15,14 @@ h3 {
   padding-top: 10px;
 }
 
+.banner {
+  min-height: 100px;
+  width: 100%;
+  background: url("static/header.jpeg");
+  background-repeat: no-repeat;
+	background-size: cover;
+}
+
 .banner img {
   width: 100%;
 }
