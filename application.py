@@ -261,14 +261,14 @@ def gdisconnect():
 # Return user id if email is stored in user database
 def getUserID(email):
     try:
-        user = session.query(User).filter_by(email = email).one()
+        user = session.query(User).filter_by(email = email).one_or_none()
         return user.id
     except:
         return None
 
 # Return user object associated with id number
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id = user_id).one()
+    user = session.query(User).filter_by(id = user_id).one_or_none()
     return user
 
 # Create new user
@@ -276,7 +276,7 @@ def createUser(login_session):
     newUser = User(username = login_session['username'], email = login_session['email'], picture = login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email = login_session['email']).one()
+    user = session.query(User).filter_by(email = login_session['email']).one_or_none()
     return user.id
 
 def login_required(f):
@@ -297,15 +297,15 @@ def showTypesJSON():
 # Create JSON function to list pets and details for a specific animal type
 @app.route('/types/<int:type_id>/pets/JSON')
 def allPetsJSON(type_id):
-    type = session.query(Type).filter_by(id = type_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
     pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
     return jsonify(animalType = [i.serialize for i in pets])
 
 # Create JSON function to list details about a specific pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/JSON')
 def showPetJSON(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one()
-    pet = session.query(Pet).filter_by(id = pet_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    pet = session.query(Pet).filter_by(id = pet_id).one_or_none()
     return jsonify(selectedPet = [pet.serialize])
 
 # CRUD functions
@@ -337,7 +337,7 @@ def newType():
 @app.route('/types/<int:type_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editType(type_id):
-    type = session.query(Type).filter_by(id = type_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
     creator = getUserInfo(type.user_id)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this information.")
@@ -356,13 +356,13 @@ def editType(type_id):
 @app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteType(type_id):
-    type = session.query(Type).filter_by(id = type_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
     creator = getUserInfo(type.user_id)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this information.")
         return redirect(url_for('showTypes'))
     if request.method == 'POST':
-        type = session.query(Type).filter_by(id = type_id).one()
+        type = session.query(Type).filter_by(id = type_id).one_or_none()
         session.delete(type)
         flash("%s successfully deleted!" % type.name)
         session.commit()
@@ -374,7 +374,7 @@ def deleteType(type_id):
 @app.route('/types/<int:type_id>/')
 @app.route('/types/<int:type_id>/pets/')
 def allPets(type_id):
-    type = session.query(Type).filter_by(id = type_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
     pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
     if 'username' not in login_session:
         return render_template('publicAllPets.html', type = type, pets = pets)
@@ -385,7 +385,7 @@ def allPets(type_id):
 @app.route('/types/<int:type_id>/pets/new/', methods=['GET', 'POST'])
 @login_required
 def newPet(type_id):
-    type = session.query(Type).filter_by(id = type_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
     if request.method == 'POST':
         newPet = Pet(name = request.form['name'], description = request.form['description'], type = type_id, user = login_session['user_id'])
         session.add(newPet)
@@ -399,8 +399,8 @@ def newPet(type_id):
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editPet(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one()
-    editedPet = session.query(Pet).filter_by(id = pet_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    editedPet = session.query(Pet).filter_by(id = pet_id).one_or_none()
     creator = getUserInfo(editedPet.user)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this pet's information.")
@@ -421,8 +421,8 @@ def editPet(type_id, pet_id):
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deletePet(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one()
-    pet = session.query(Pet).filter_by(id = pet_id).one()
+    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    pet = session.query(Pet).filter_by(id = pet_id).one_or_none()
     creator = getUserInfo(pet.user)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this pet's information.")
