@@ -21,7 +21,8 @@ import string
 import json
 from functools import wraps
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
+CLIENT_ID = json.loads(open('client_secrets.json',
+                            'r').read())['web']['client_id']
 APPLICATION_NAME = 'Item Catalog Application'
 
 app = Flask(__name__)
@@ -36,7 +37,8 @@ session = DBSession()
 # Create Anti-Forgery State Token
 @app.route('/login')
 def showLogin():
-    state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
+    state = ''.join(random.choice(string.ascii_uppercase +
+                                  string.digits) for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
@@ -103,8 +105,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps(
+                'Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -150,22 +152,17 @@ def fbconnect():
     access_token = request.data
     print "access token received %s " % access_token
 
-    app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
-    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        app_id, app_secret, access_token)
+    app_id = json.loads(open('fb_client_secrets.json',
+                             'r').read())['web']['app_id']
+    app_secret = json.loads(open('fb_client_secrets.json',
+                                 'r').read())['web']['app_secret']
+    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
 
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
-    '''
-        Due to the formatting for the result from the server token exchange we have to
-        split the token first on commas and select the first index which gives us the key : value
-        for the server access token then we split it on colons to pull out the actual token value
-        and replace the remaining quotes with nothing so that it can be used directly in the graph
-        api calls
-    '''
+
     token = result.split(',')[0].split(':')[1].replace('"', '')
 
     url = 'https://graph.facebook.com/v2.8/me?access_token=%s&fields=name,id,email' % token
@@ -204,9 +201,6 @@ def fbconnect():
     output += login_session['username']
 
     output += '!</h1>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 150px; height: 150px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
 
@@ -260,7 +254,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps(
+                'Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -282,10 +277,13 @@ def getUserInfo(user_id):
 
 # Create new user
 def createUser(login_session):
-    newUser = User(username=login_session['username'], email=login_session['email'], picture=login_session['picture'])
+    newUser = User(username=login_session['username'],
+                   email=login_session['email'],
+                   picture=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one_or_none()
+    user = session.query(User).filter_by(
+        email=login_session['email']).one_or_none()
     return user.id
 
 
@@ -310,7 +308,8 @@ def showTypesJSON():
 @app.route('/types/<int:type_id>/pets/JSON')
 def allPetsJSON(type_id):
     type = session.query(Type).filter_by(id=type_id).one_or_none()
-    pets = session.query(Pet).filter_by(type=type_id).order_by(asc(Pet.name)).all()
+    pets = session.query(Pet).filter_by(
+        type=type_id).order_by(asc(Pet.name)).all()
     return jsonify(animalType=[i.serialize for i in pets])
 
 
@@ -340,7 +339,8 @@ def showTypes():
 @login_required
 def newType():
     if request.method == 'POST':
-        newType = Type(name=request.form['name'], user_id=login_session['user_id'])
+        newType = Type(name=request.form['name'],
+                       user_id=login_session['user_id'])
         session.add(newType)
         flash("New animal type, %s, successfully created!" % newType.name)
         session.commit()
@@ -393,7 +393,8 @@ def deleteType(type_id):
 @app.route('/types/<int:type_id>/pets/')
 def allPets(type_id):
     type = session.query(Type).filter_by(id=type_id).one_or_none()
-    pets = session.query(Pet).filter_by(type=type_id).order_by(asc(Pet.name)).all()
+    pets = session.query(Pet).filter_by(
+            type=type_id).order_by(asc(Pet.name)).all()
     if 'username' not in login_session:
         return render_template('publicAllPets.html', type=type, pets=pets)
     else:
@@ -406,7 +407,9 @@ def allPets(type_id):
 def newPet(type_id):
     type = session.query(Type).filter_by(id=type_id).one_or_none()
     if request.method == 'POST':
-        newPet = Pet(name=request.form['name'], description=request.form['description'], type=type_id, user=login_session['user_id'])
+        newPet = Pet(name=request.form['name'],
+                     description=request.form['description'], type=type_id,
+                     user=login_session['user_id'])
         session.add(newPet)
         flash("Created new pet, %s" % newPet.name)
         session.commit()
@@ -416,7 +419,8 @@ def newPet(type_id):
 
 
 # Edit a current pet
-@app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
+@app.route('/types/<int:type_id>/pets/<int:pet_id>/edit',
+           methods=['GET', 'POST'])
 @login_required
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id=type_id).one_or_none()
@@ -439,7 +443,8 @@ def editPet(type_id, pet_id):
 
 
 # Delete a pet
-@app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
+@app.route('/types/<int:type_id>/pets/<int:pet_id>/delete',
+           methods=['GET', 'POST'])
 @login_required
 def deletePet(type_id, pet_id):
     type = session.query(Type).filter_by(id=type_id).one_or_none()
