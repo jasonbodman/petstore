@@ -1,4 +1,5 @@
-from flask import Flask, render_template, url_for, request, redirect, flash, jsonify, g
+from flask import Flask, render_template, url_for, request, redirect
+from flask import flash, jsonify, g
 
 # Database Connection
 from database_setup import Base, Type, Pet, User
@@ -14,7 +15,10 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 from flask import make_response
-import requests, random, string, json
+import requests
+import random
+import string
+import json
 from functools import wraps
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
@@ -27,15 +31,17 @@ Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+
 # User Authentication
-#Create Anti-Forgery State Token
+# Create Anti-Forgery State Token
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html', STATE=state)
 
-@app.route('/oauth/<provider>', methods = ['POST'])
+
+@app.route('/oauth/<provider>', methods=['POST'])
 def login(provider):
     # Validate state token
     if request.args.get('state') != login_session['state']:
@@ -43,8 +49,8 @@ def login(provider):
         response.headers['Content-Type'] = 'application/json'
         return response
 
-# Connect via Google Plus Sign In
 
+# Connect via Google Plus Sign In
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # Validate state token
@@ -133,6 +139,7 @@ def gconnect():
     flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
 
+
 # Connect via Facebook Sign In
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
@@ -143,14 +150,12 @@ def fbconnect():
     access_token = request.data
     print "access token received %s " % access_token
 
-
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_id']
     app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
         app_id, app_secret, access_token)
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-
 
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v2.8/me"
@@ -205,6 +210,7 @@ def fbconnect():
     flash("Welcome! You are now logged in as %s" % login_session['username'])
     return output
 
+
 @app.route('/disconnect')
 def disconnect():
     if 'provider' in login_session:
@@ -232,7 +238,7 @@ def fbdisconnect():
     facebook_id = login_session['facebook_id']
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id,access_token)
+    url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (facebook_id, access_token)
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
@@ -258,26 +264,30 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
+
 # Return user id if email is stored in user database
 def getUserID(email):
     try:
-        user = session.query(User).filter_by(email = email).one_or_none()
+        user = session.query(User).filter_by(email=email).one_or_none()
         return user.id
     except:
         return None
 
+
 # Return user object associated with id number
 def getUserInfo(user_id):
-    user = session.query(User).filter_by(id = user_id).one_or_none()
+    user = session.query(User).filter_by(id=user_id).one_or_none()
     return user
+
 
 # Create new user
 def createUser(login_session):
-    newUser = User(username = login_session['username'], email = login_session['email'], picture = login_session['picture'])
+    newUser = User(username=login_session['username'], email=login_session['email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
-    user = session.query(User).filter_by(email = login_session['email']).one_or_none()
+    user = session.query(User).filter_by(email=login_session['email']).one_or_none()
     return user.id
+
 
 def login_required(f):
     @wraps(f)
@@ -287,26 +297,30 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+
 # JSON Functions
 # Create JSON function to list all animal types and details
 @app.route('/types/JSON')
 def showTypesJSON():
     types = session.query(Type).order_by(asc(Type.name))
-    return jsonify(types = [i.serialize for i in types])
+    return jsonify(types=[i.serialize for i in types])
+
 
 # Create JSON function to list pets and details for a specific animal type
 @app.route('/types/<int:type_id>/pets/JSON')
 def allPetsJSON(type_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
-    pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
-    return jsonify(animalType = [i.serialize for i in pets])
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
+    pets = session.query(Pet).filter_by(type=type_id).order_by(asc(Pet.name)).all()
+    return jsonify(animalType=[i.serialize for i in pets])
+
 
 # Create JSON function to list details about a specific pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/JSON')
 def showPetJSON(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
-    pet = session.query(Pet).filter_by(id = pet_id).one_or_none()
-    return jsonify(selectedPet = [pet.serialize])
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
+    pet = session.query(Pet).filter_by(id=pet_id).one_or_none()
+    return jsonify(selectedPet=[pet.serialize])
+
 
 # CRUD functions
 # Show all animal types
@@ -315,17 +329,18 @@ def showPetJSON(type_id, pet_id):
 def showTypes():
     types = session.query(Type).order_by(asc(Type.name))
     if 'username' not in login_session:
-        return render_template('publicTypes.html', types = types)
+        return render_template('publicTypes.html', types=types)
     else:
-        return render_template('types.html', types = types)
-    return render_template('publicTypes.html', types = types)
+        return render_template('types.html', types=types)
+    return render_template('publicTypes.html', types=types)
+
 
 # Create a new animal type
 @app.route('/types/new/', methods=['GET', 'POST'])
 @login_required
 def newType():
     if request.method == 'POST':
-        newType = Type(name = request.form['name'], user_id = login_session['user_id'])
+        newType = Type(name=request.form['name'], user_id=login_session['user_id'])
         session.add(newType)
         flash("New animal type, %s, successfully created!" % newType.name)
         session.commit()
@@ -333,11 +348,12 @@ def newType():
     else:
         return render_template('newType.html')
 
+
 # Edit a current animal type
 @app.route('/types/<int:type_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editType(type_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
     creator = getUserInfo(type.user_id)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this information.")
@@ -350,61 +366,65 @@ def editType(type_id):
             session.commit()
             return redirect(url_for('showTypes'))
     else:
-        return render_template('editType.html', type = type)
+        return render_template('editType.html', type=type)
+
 
 # Delete a current animal type
 @app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteType(type_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
     creator = getUserInfo(type.user_id)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this information.")
         return redirect(url_for('showTypes'))
     if request.method == 'POST':
-        type = session.query(Type).filter_by(id = type_id).one_or_none()
+        type = session.query(Type).filter_by(id=type_id).one_or_none()
         session.delete(type)
         flash("%s successfully deleted!" % type.name)
         session.commit()
         return redirect(url_for('showTypes'))
     else:
-        return render_template('deleteType.html', type = type)
+        return render_template('deleteType.html', type=type)
+
 
 # Show pets for a specific animal type
 @app.route('/types/<int:type_id>/')
 @app.route('/types/<int:type_id>/pets/')
 def allPets(type_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
-    pets = session.query(Pet).filter_by(type = type_id).order_by(asc(Pet.name)).all()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
+    pets = session.query(Pet).filter_by(type=type_id).order_by(asc(Pet.name)).all()
     if 'username' not in login_session:
-        return render_template('publicAllPets.html', type = type, pets = pets)
+        return render_template('publicAllPets.html', type=type, pets=pets)
     else:
-        return render_template('allPets.html', type = type, pets = pets)
+        return render_template('allPets.html', type=type, pets=pets)
+
 
 # Create a new pet
 @app.route('/types/<int:type_id>/pets/new/', methods=['GET', 'POST'])
 @login_required
 def newPet(type_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
     if request.method == 'POST':
-        newPet = Pet(name = request.form['name'], description = request.form['description'], type = type_id, user = login_session['user_id'])
+        newPet = Pet(name=request.form['name'], description=request.form['description'], type=type_id, user=login_session['user_id'])
         session.add(newPet)
         flash("Created new pet, %s" % newPet.name)
         session.commit()
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('allPets', type_id=type_id))
     else:
-        return render_template('newPet.html', type = type)
+        return render_template('newPet.html', type=type)
+
 
 # Edit a current pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editPet(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
-    editedPet = session.query(Pet).filter_by(id = pet_id).one_or_none()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
+    editedPet = session.query(Pet).filter_by(id=pet_id).one_or_none()
     creator = getUserInfo(editedPet.user)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this pet's information.")
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('allPets', type_id=type_id))
     if request.method == 'POST':
         if request.form['name']:
             editedPet.name = request.form['name']
@@ -413,25 +433,26 @@ def editPet(type_id, pet_id):
         session.add(editedPet)
         flash("Successfully edited %s's details" % editedPet.name)
         session.commit()
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('allPets', type_id=type_id))
     else:
-        return render_template('editPet.html', type = type, pet=editedPet)
+        return render_template('editPet.html', type=type, pet=editedPet)
+
 
 # Delete a pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deletePet(type_id, pet_id):
-    type = session.query(Type).filter_by(id = type_id).one_or_none()
-    pet = session.query(Pet).filter_by(id = pet_id).one_or_none()
+    type = session.query(Type).filter_by(id=type_id).one_or_none()
+    pet = session.query(Pet).filter_by(id=pet_id).one_or_none()
     creator = getUserInfo(pet.user)
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this pet's information.")
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('allPets', type_id=type_id))
     if request.method == 'POST':
         session.delete(pet)
         flash("Successfully deleted %s" % pet.name)
         session.commit()
-        return redirect(url_for('allPets', type_id = type_id))
+        return redirect(url_for('allPets', type_id=type_id))
     else:
         return render_template('deletePet.html', type=type, pet=pet)
 
