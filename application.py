@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request, redirect, flash, jsonify
+from flask import Flask, render_template, url_for, request, redirect, flash, jsonify, g
 
 # Database Connection
 from database_setup import Base, Type, Pet, User
@@ -15,6 +15,7 @@ from oauth2client.client import FlowExchangeError
 import httplib2
 from flask import make_response
 import requests, random, string, json
+from functools import wraps
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = 'Item Catalog Application'
@@ -278,6 +279,13 @@ def createUser(login_session):
     user = session.query(User).filter_by(email = login_session['email']).one()
     return user.id
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in login_session:
+            return redirect(url_for('showLogin', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
 
 # JSON Functions
 # Create JSON function to list all animal types and details
@@ -314,9 +322,8 @@ def showTypes():
 
 # Create a new animal type
 @app.route('/types/new/', methods=['GET', 'POST'])
+@login_required
 def newType():
-    if 'username' not in login_session:
-        return redirect('/login')
     if request.method == 'POST':
         newType = Type(name = request.form['name'], user_id = login_session['user_id'])
         session.add(newType)
@@ -328,11 +335,10 @@ def newType():
 
 # Edit a current animal type
 @app.route('/types/<int:type_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editType(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
     creator = getUserInfo(type.user_id)
-    if 'username' not in login_session:
-        return redirect('/login')
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this information.")
         return redirect(url_for('showTypes'))
@@ -348,11 +354,10 @@ def editType(type_id):
 
 # Delete a current animal type
 @app.route('/types/<int:type_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deleteType(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
     creator = getUserInfo(type.user_id)
-    if 'username' not in login_session:
-        return redirect('/login')
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this information.")
         return redirect(url_for('showTypes'))
@@ -378,10 +383,9 @@ def allPets(type_id):
 
 # Create a new pet
 @app.route('/types/<int:type_id>/pets/new/', methods=['GET', 'POST'])
+@login_required
 def newPet(type_id):
     type = session.query(Type).filter_by(id = type_id).one()
-    if 'username' not in login_session:
-        return redirect('/login')
     if request.method == 'POST':
         newPet = Pet(name = request.form['name'], description = request.form['description'], type = type_id, user = login_session['user_id'])
         session.add(newPet)
@@ -393,12 +397,11 @@ def newPet(type_id):
 
 # Edit a current pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/edit', methods=['GET', 'POST'])
+@login_required
 def editPet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     editedPet = session.query(Pet).filter_by(id = pet_id).one()
     creator = getUserInfo(editedPet.user)
-    if 'username' not in login_session:
-        return redirect('/login')
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to edit this pet's information.")
         return redirect(url_for('allPets', type_id = type_id))
@@ -416,12 +419,11 @@ def editPet(type_id, pet_id):
 
 # Delete a pet
 @app.route('/types/<int:type_id>/pets/<int:pet_id>/delete', methods=['GET', 'POST'])
+@login_required
 def deletePet(type_id, pet_id):
     type = session.query(Type).filter_by(id = type_id).one()
     pet = session.query(Pet).filter_by(id = pet_id).one()
     creator = getUserInfo(pet.user)
-    if 'username' not in login_session:
-        return redirect('/login')
     if login_session['user_id'] != creator.id:
         flash("You do not have proper access to delete this pet's information.")
         return redirect(url_for('allPets', type_id = type_id))
